@@ -73,8 +73,7 @@
  *   FootClass::~FootClass -- Default destructor for foot class objects.                       *
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-#include	"function.h"
-
+#include "function.h"
 
 /***********************************************************************************************
  * FootClass::FootClass -- Default constructor for foot class objects.                         *
@@ -401,7 +400,8 @@ bool FootClass::Basic_Path(void)
 		}
 #endif
 
-		if (!skip_path) {
+		if (!skip_path) 
+		{
 			Mark(MARK_UP);
 			Path[0] = FACING_NONE;		// Probably not necessary, but...
 
@@ -413,11 +413,13 @@ bool FootClass::Basic_Path(void)
 			bool			found1=false;		// Found a best path yet?
 			PathType	   path1;
 			FacingType	workpath1[200];	// Staging area for path list.
-			FacingType	workpath2[200];	// Staging area for path list.
 			MoveType		maxtype = MOVE_TEMP;
-			if (!House->IsHuman) {
+			if (!House->IsHuman) 
+			{
 				maxtype = MOVE_DESTROYABLE;
-			} else {
+			} 
+			else 
+			{
 
 				/*
 				**	For simple movement missions by the human player, then don't
@@ -426,7 +428,8 @@ bool FootClass::Basic_Path(void)
 				**	to a destination just because there is another friendly unit
 				**	occupying the destination location.
 				*/
-				if (Mission == MISSION_MOVE && Distance(NavCom) < 0x0280) {
+				if (Mission == MISSION_MOVE && Distance(NavCom) < 0x0280) 
+				{
 					maxtype = MOVE_DESTROYABLE;
 				}
 			}
@@ -436,34 +439,35 @@ bool FootClass::Basic_Path(void)
 			**	aggressive case. If this fails, then no path will succeed. Further
 			**	scanning is unnecessary.
 			*/
-			path = Find_Path(cell, &workpath1[0], sizeof(workpath1), maxtype);
-			if (path && path->Cost) {
+			path = FIND_PATH(cell, &workpath1[0], sizeof(workpath1), maxtype);
+			if (path && path->Cost) 
+			{
 				memcpy(&path1, path, sizeof(path1));
 				found1 = true;
 
-				/*
-				**	Scan for the best path possible. If this succeeds, then do a simple
-				**	comparison with the most agressive path. If they are very close, then
-				**	go with the best (easiest) path method.
-				*/
-				path = Find_Path(cell, &workpath2[0], sizeof(workpath2), MOVE_CLOAK);
-				if (path && path->Cost && path->Cost < MAX((path1.Cost + (path1.Cost/2)), 3)) {
-					memcpy(&path1, path, sizeof(path1));
-					memcpy(workpath1, workpath2, sizeof(workpath1));
-				} else {
+			//	/*
+			//	**	Scan for the best path possible. If this succeeds, then do a simple
+			//	**	comparison with the most agressive path. If they are very close, then
+			//	**	go with the best (easiest) path method.
+			//	*/
+			//	path = FIND_PATH(cell, &workpath2[0], sizeof(workpath2), MOVE_CLOAK);
+			//	if (path && path->Cost && path->Cost < MAX((path1.Cost + (path1.Cost/2)), 3)) {
+			//		memcpy(&path1, path, sizeof(path1));
+			//		memcpy(workpath1, workpath2, sizeof(workpath1));
+			//	} else {
 
-					/*
-					**	The easiest path method didn't result in a satisfactory path. Scan through
-					**	the rest of the path options, looking for the best one.
-					*/
-					for (MoveType move = MOVE_MOVING_BLOCK; move < maxtype; move++) {
-						path = Find_Path(cell, &workpath2[0], sizeof(workpath2), move);
-						if (path && path->Cost && path->Cost < MAX((path1.Cost + (path1.Cost/2)), 3)) {
-							memcpy(&path1, path, sizeof(path1));
-							memcpy(workpath1, workpath2, sizeof(workpath1));
-						}
-					}
-				}
+			//		/*
+			//		**	The easiest path method didn't result in a satisfactory path. Scan through
+			//		**	the rest of the path options, looking for the best one.
+			//		*/
+			//		for (MoveType move = MOVE_MOVING_BLOCK; move < maxtype; move++) {
+			//			path = FIND_PATH(cell, &workpath2[0], sizeof(workpath2), move);
+			//			if (path && path->Cost && path->Cost < MAX((path1.Cost + (path1.Cost/2)), 3)) {
+			//				memcpy(&path1, path, sizeof(path1));
+			//				memcpy(workpath1, workpath2, sizeof(workpath1));
+			//			}
+			//		}
+			//	}
 			}
 
 #ifdef OBSOLETE
@@ -1451,7 +1455,7 @@ void FootClass::Per_Cell_Process(bool center)
  *=========================================================================*/
 void FootClass::Override_Mission(MissionType mission, TARGET tarcom, TARGET navcom)
 {
- 	SuspendedNavCom = NavCom;
+	SuspendedNavCom = NavCom;
 	TechnoClass::Override_Mission(mission, tarcom, navcom);
 
 	Assign_Destination(navcom);
